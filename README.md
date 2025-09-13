@@ -137,14 +137,6 @@ erDiagram
 - **User → Transaction**: One-to-Many (A user can create multiple transactions)
 - **User → RefreshToken**: One-to-Many (A user can have multiple refresh tokens)
 
-
-### Entity Relationships
-- **Category → Product**: One-to-Many (A category can have multiple products)
-- **Product → Transaction**: One-to-Many (A product can have multiple transactions)
-- **Product → LowStockAlert**: One-to-One (Each product can have one active alert)
-- **Transaction → Payment**: One-to-One (Each transaction can have one payment record)
-- **User → Transaction**: One-to-Many (A user can create multiple transactions)
-- **User → RefreshToken**: One-to-Many (A user can have multiple refresh tokens)
 ## 🛠️ Tech Stack
 
 - **Framework**: ASP.NET Core 8
