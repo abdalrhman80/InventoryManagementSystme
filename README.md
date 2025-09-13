@@ -162,8 +162,8 @@ erDiagram
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/inventory-management-api.git
-cd inventory-management-api
+git clone https://github.com/yourusername/InventoryManagementSystme.git
+cd InventoryManagementSystme
 ```
 
 ### 2. Configure Database Connection
