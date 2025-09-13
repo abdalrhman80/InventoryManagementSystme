@@ -42,51 +42,101 @@ This project follows **Clean Architecture** principles with **CQRS** pattern imp
 
 The system uses Microsoft SQL Server with the following core entities and relationships:
 
+```mermaid
+erDiagram
+    Category {
+        int id PK
+        string name
+        string description
+    }
+
+    Product {
+        int id PK
+        int category_id FK
+        string name
+        string description
+        decimal price
+        int stock_qty
+        string supplier
+        datetime create_at
+        datetime update_at
+    }
+
+    LowStockAlert {
+        int id PK
+        int product_id FK
+        int threshold
+        boolean alert_sent
+        datetime create_at
+        datetime sent_at
+        datetime last_alert
+    }
+
+    Transaction {
+        int id PK
+        int product_id FK
+        string create_by FK
+        int quantity
+        enum type "Purchase/Sale"
+        datetime create_date
+        datetime update_date
+        decimal total_amount
+        enum status "Success/Pending/Rejected"
+        datetime cancelled_date
+        string cancelled_reason
+        string cancelled_by
+    }
+
+    Payment {
+        int id PK
+        int transaction_id FK
+        decimal amount
+        string method
+        enum status
+        datetime created_at
+    }
+
+    User {
+        string user_id PK
+        string first_name
+        string last_name
+        string address
+        string phone_number
+        string image_path
+        string email_confirmed_token
+        string email_confirmed_code
+        string email_confirmed_code_expires
+        string password_confirmed_token
+        string password_confirmed_code
+        string password_confirmed_code_expires
+    }
+
+    RefreshToken {
+        int id PK
+        string user_id FK
+        string token
+        datetime expiration_on
+        datetime create_on
+        datetime revoked_on
+    }
+
+    Category ||--o{ Product : "has many"
+    Product ||--o{ Transaction : "has many"
+    Product ||--o| LowStockAlert : "has one"
+    Transaction ||--o| Payment : "has one"
+    User ||--o{ Transaction : "creates many"
+    User ||--o{ RefreshToken : "has many"
 ```
-┌─────────────────┐   ┌─────────────────┐    ┌─────────────────┐
-│    Category     │   │    Product      │    │  LowStockAlert  │
-├─────────────────┤   ├─────────────────┤    ├─────────────────┤
-│ PK: id          │◄──┤ PK: id          │───►│ PK: id          │
-│    name         │   │ FK: category_id │    │ FK: product_id  │
-│    description  │   │    name         │    │    threshold    │
-└─────────────────┘   │    description  │    │    alert_sent   │
-                      │    price        │    │    create_at    │
-                      │    stock_qty    │    │    sent_at      │
-                      │    supplier     │    │    last_alert   │
-                      │    create_at    │    └─────────────────┘
-                      │    update_at    │
-                      └─────────────────┘
-                               │
-                               ▼
-                      ┌─────────────────┐    ┌─────────────────┐
-                      │   Transaction   │    │    Payment      │
-                      ├─────────────────┤    ├─────────────────┤
-                      │ PK: id          │◄───┤ PK: id          │
-                      │ FK: product_id  │    │ FK: transaction │
-                      │ FK: create_by   │    │    amount       │
-                      │    quantity     │    │    method       │
-                      │    type (enum)  │    │    status       │
-                      │    create_date  │    └─────────────────┘
-                      │    update_date  │
-                      │    total_amount │           │
-                      │    status       │           ▼
-                      │    cancelled_*  │    ┌─────────────────┐
-                      └─────────────────┘    │  RefreshToken   │
-                               │             ├─────────────────┤
-                               ▼             │ PK: id          │
-                      ┌─────────────────┐    │ FK: user_id     │
-                      │ User(Identity)  │◄───┤    token        │
-                      ├─────────────────┤    │    expiration   │
-                      │ PK: user_id     │    │    create_on    │
-                      │    first_name   │    │    revoked_on   │
-                      │    last_name    │    └─────────────────┘
-                      │    address      │
-                      │    phone_number │
-                      │    image_path   │
-                      │    email_conf_* │
-                      │    password_*   │
-                      └─────────────────┘
-```
+
+### Entity Relationships
+
+- **Category → Product**: One-to-Many (A category can have multiple products)
+- **Product → Transaction**: One-to-Many (A product can have multiple transactions)
+- **Product → LowStockAlert**: One-to-One (Each product can have one active alert)
+- **Transaction → Payment**: One-to-One (Each transaction can have one payment record)
+- **User → Transaction**: One-to-Many (A user can create multiple transactions)
+- **User → RefreshToken**: One-to-Many (A user can have multiple refresh tokens)
+
 
 ### Entity Relationships
 - **Category → Product**: One-to-Many (A category can have multiple products)
